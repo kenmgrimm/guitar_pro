@@ -4,6 +4,16 @@ import time
 
 import guitarpro
 
+
+# input guitar_pro file
+#   create simple midi on / off w/ ticks
+#   create simple string / fret placement w/ ticks
+#   draw out tab in curses using string / frets
+#   play midi along with movement of cursor in curses tab
+#   add keys tempo up / down, forward / back
+
+
+
 # TEMPO_PERCENT = 100
 TEMPO_PERCENT = 0.5
 
