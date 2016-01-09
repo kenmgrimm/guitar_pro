@@ -17,6 +17,9 @@ import guitarpro
 # TEMPO_PERCENT = 100
 TEMPO_PERCENT = 0.5
 
+NO_NOTES = [-1, -1, -1, -1, -1, -1]
+
+
 def currentTime():
   return int(round(time.time() * TEMPO_PERCENT * 1000))
 
@@ -34,6 +37,7 @@ class NoteOnEvent:
 
   def timeToPlay(self):
     return currentTime() > self.realStartTime
+
 
 
 class NoteOffEvent:
@@ -56,13 +60,16 @@ def printTabNotes():
 def main():
   filepath = path.join('Rush - Spirit Of The Radio.gp5')
   song = guitarpro.parse(filepath)
+  tablature = Tablature()
 
   for track in song.tracks:
     print "\n\nTrack: " + track.name
-    events = []
 
+    cnt = 0
     for measure in track.measures:
       for voice in measure.voices:
+        events = []
+
         for beat in voice.beats:
 
           print "Beat start: " + str(beat.start) + ", duration: " + str(beat.duration.time)
@@ -80,16 +87,72 @@ def main():
             event = NoteOffEvent(track, note, beat)
             events.append(event)
 
+        lastEventTime = 0
+        for event in sorted(events, key = eventStartTime) :
+          # while(not(event.timeToPlay())):
+          #   time.sleep(0.001)
+          if event.realStartTime != lastEventTime :
+            tablature.appendStringState(events)
+            events = []
 
-      for event in sorted(events, key = eventStartTime) :
-        while(not(event.timeToPlay())):
-          time.sleep(0.001)
+            lastEventTime = event.realStartTime
 
-        print event.name + " (" + str(event.realStartTime) + ") : " + str(event.note.string) + ", " + str(event.note.value) + "  (" + str(event.note.realValue) + ")"
+          events.append(event)
+
+          print event.name + " (" + str(event.realStartTime) + ") : " + str(event.note.string) + ", " + str(event.note.value) + "  (" + str(event.note.realValue) + ")"
+
+
+    cnt += 1
+
+    if cnt > 10 : break
+
+  tablature.draw()
+
+
+class Tablature:
+  def __init__(self):
+    self.stringStates = []
+
+  def draw(self):
+    for index in xrange(int(len(self.stringStates) / 50)) :
+      rowStartPos = index * 50
+
+      for string in [0, 1, 2, 3, 4, 5] :
+        line = []
+        # print "adding string " + str(string) + " rowStartPos " + str(rowStartPos)
+        for stringState in self.stringStates[rowStartPos:rowStartPos + 50] :
+          symbol = ' -' if stringState[string] == -1 else str(stringState[string]).rjust(2)
+
+          line.append(symbol)
+
+        print ''.join(line)
+
+      print "\n\n"
+
+
+  def appendStringState(self, events):
+    stringState = NO_NOTES
+
+    if len(self.stringStates) > 0 :
+      stringState = list(self.stringStates[-1])
+
+    for event in events :
+      if event.__class__ is NoteOnEvent :
+        # print stringState
+        # print " STRING: " + str(event.note.string - 1) + " NOTE: " + str(event.note.value)
+        stringState[event.note.string - 1] = event.note.value
+      else :
+        stringState[event.note.string - 1] = -1
+        # print stringState
+        # print " STRING2: " + str(event.note.string - 1) + " NOTE: " + str(event.note.value)
+
+    self.stringStates.append(stringState)
+
 
 
 def eventStartTime(event):
   return event.realStartTime
+
 
 
 if __name__ == '__main__':
