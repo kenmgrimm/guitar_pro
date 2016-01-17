@@ -15,23 +15,32 @@ class MidiSynth {
     try {
       Synthesizer synth = MidiSystem.getSynthesizer();
 
-      Soundbank soundbank = synth.getDefaultSoundbank();
-      Instrument[] instruments = soundbank.getInstruments();
+      // Soundbank soundbank = synth.getDefaultSoundbank();
+      // Instrument[] instruments = soundbank.getInstruments();
 
-      Instrument instrument = instruments[1];
+      // Instrument instrument = instruments[1];
 
       synth.open();
-      // synth.loadInstrument(instrument);
 
       MidiChannel[] channels = synth.getChannels();
       MidiChannel mc = channels[channel];
 
       // BufferedInputStream soundBankStream = new BufferedInputStream(
-       // MidiSynth.class.getClassLoader().getResourceAsStream("soundbank-emg.sf2"));
+       // MidiSynth.class.getClassLoader().getResourceAsStream("/data/projects/guitar_pro/soundbank-deluxe.gm"));
 
       // synth.loadAllInstruments(MidiSystem.getSoundbank(soundBankStream));
 
-      // mc.programChange(instrument.getPatch().getProgram());
+      // soundBankStream.close()
+
+      Soundbank soundbank = synth.getDefaultSoundbank();
+      Instrument[] instruments = soundbank.getInstruments();
+
+      Instrument instrument = instruments[17];
+
+
+      synth.loadInstrument(instrument);
+
+      mc.programChange(instrument.getPatch().getProgram());
 
         while (true) {
           try {
@@ -62,7 +71,6 @@ class MidiSynth {
 
 // movie of dream sequences one after another from a person in VR.  Cuts back to reality in very quick intervals where the person 
 
-      // synth.close();
     } catch (Exception e) {
       e.printStackTrace();
 

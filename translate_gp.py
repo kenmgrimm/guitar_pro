@@ -2,6 +2,7 @@ from os import path
 
 import subprocess
 
+import sys
 import time
 import curses
 from subprocess import Popen, PIPE
@@ -9,7 +10,10 @@ from subprocess import Popen, PIPE
 import guitarpro
 
 
-START = 170
+START = 0
+# START = 170
+
+ch = ''
 
 # TEMPO_PERCENT = 100
 TEMPO_PERCENT = 0.0005
@@ -23,6 +27,7 @@ def currentTime():
 START_TIME = currentTime()
 
 myscreen = curses.initscr()
+myscreen.timeout(1)
 
 midiSynth = subprocess.Popen(['java', 'MidiSynth'], stdin = subprocess.PIPE)
 
@@ -128,8 +133,6 @@ class Tab:
 				myscreen.addstr(currentLineNumber, 4, '- '.join(line))
 				currentLineNumber += 1
 
-			# print "INDEXES: " + str(self.playIndex) + " : " + str(startPos) + " : " + str(endPos)
-
 			if self.playIndex >= startPos and self.playIndex < endPos:
 				frontPadLength = self.playIndex - startPos
 				endPadLength = endPos - self.playIndex - 1
@@ -147,7 +150,7 @@ class Tab:
 			# for segmentStart in xrange(0, len(line), TAB_LINE_LENGTH):
 			# 	segment = yield line[segmentStart:segmentStart + TAB_LINE_LENGTH]
 			# 	print ' '.join(segment)
-		myscreen.addstr(currentLineNumber, 1, "  " + str(startMs * TEMPO_PERCENT - lastMs * TEMPO_PERCENT))
+		myscreen.addstr(currentLineNumber, 1, "  " + str(startMs * TEMPO_PERCENT - lastMs * TEMPO_PERCENT) + ", " + ch)
 		currentLineNumber += 1
 		
 		myscreen.refresh()
@@ -156,17 +159,20 @@ class Tab:
 		self.playIndex = START
 
 		lastMs = 0
+		index = self.playIndex
+
 		startTime = self.ticks[self.playIndex].startMs
 
-		for index in range(self.playIndex, len(self.ticks)):
+		while index < len(self.ticks):
+			sys.stderr.write("got: " + str(index) + "  ")
+
 			tick = self.ticks[index]
 
+			if lastMs == -1:
+				lastMs = self.ticks[index - 1].startMs - startTime
+				sys.stderr.write("last now: " + str(lastMs))
 
 			self.printLines(tick.startMs, lastMs)
-			print "sleeping " + str((tick.startMs - startTime) * TEMPO_PERCENT - lastMs * TEMPO_PERCENT)
-			print str(startTime)
-			print str(tick.startMs)
-			print str(lastMs)
 
 			notes = []
 			for note in tick.realNoteValues:
@@ -177,9 +183,36 @@ class Tab:
 
 			time.sleep((tick.startMs - startTime) * TEMPO_PERCENT - lastMs * TEMPO_PERCENT)
 
+			ch = myscreen.getch()
+
+			# sys.stderr.write("got: " + str(ch) + "  ")
 			lastMs = tick.startMs - startTime
 
 			self.playIndex += 1
+			index += 1
+
+
+			### Attempt at forward, rewind
+
+			if ch == 27:
+				# self.playIndex -= 10
+				index -= 10
+				lastMs = -1
+				self.playIndex -= 10
+			elif ch == 91:
+				# self.playIndex += 10
+				index -= 10
+				lastMs = -1
+				self.playIndex -= 10
+
+			if index < 0: index = 0
+			if self.playIndex < 0: self.playIndex = 0
+
+			sys.stderr.write("new vals: " + str(index) + ", " + str(lastMs))
+
+			# self.playIndex += 10
+
+
 
 			curses.endwin()
 
@@ -200,7 +233,11 @@ def main():
 
 	myscreen.border(0)
 
-	filepath = path.join('Rush - Spirit Of The Radio.gp5')
+	# filepath = path.join('Rush - Spirit Of The Radio.gp5')
+	# filepath = path.join('the_rain_song.gp5')
+	filepath = path.join('since_ive_been_loving_you.gp3')
+	# filepath = path.join('mediterranean_sundance.gp5')
+	# filepath = path.join('entre_dos_aguas.gp3')
 	song = guitarpro.parse(filepath)
 
 	tab = Tab()
