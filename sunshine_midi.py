@@ -3,25 +3,25 @@ import os
 import time
 import sys
 
+if os.uname()[4][:3] == 'arm':
+  sys.stderr.write("Running Raspberry Pi\n  os: " + ' '.join(os.uname()) + "\n\n")
 
-# from neopixel import *
-import os
-sys.stderr.write("os: " + ' '.join(os.uname()))
-exit()
+  from neopixel import *
+else:
+  sys.stderr.write("Not on Raspberry Pi\n  os: " + ' '.join(os.uname()) + "\n\n")
 
-# print os.uname()
+  class Strip:
+    def show():
+      print "showing"
+
+    def setPixelColor(i, color):
+      print "setPixelColor"
+
+  class Color:
+    def __init__(self, r, g, b):
+      print "__init__"
 
 
-class Strip:
-  def show():
-    print "showing"
-
-  def setPixelColor(i, color):
-    print "setPixelColor"
-
-class Color:
-  def __init__(self, r, g, b):
-    print "__init__"
 
 # LED strip configuration:
 LED_COUNT      = 100      # Number of LED pixels.
