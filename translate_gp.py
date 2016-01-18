@@ -26,6 +26,7 @@ ch = ''
 TEMPO_PERCENT = 0.0004
 
 TAB_LINE_LENGTH = 40 
+TAB_HEIGHT = 50
 
 def currentTime():
   return int(round(time.time() * TEMPO_PERCENT * 1000)) 
@@ -38,6 +39,10 @@ myscreen.timeout(1)
 
 midiSynth = subprocess.Popen(['java', 'MidiSynth'], stdin = subprocess.PIPE)
 
+if curses.COLS < TAB_LINE_LENGTH or curses.LINES < TAB_HEIGHT:
+  sys.stderr.write("Screen size too small: " + str(curses.COLS) + "x" + str(curses.LINES) + "\n")
+  sys.stderr.write("Screen size should be at least: " + str(TAB_LINE_LENGTH) + "x" + str(TAB_HEIGHT) + "\n\n\n")
+  exit()
 
 class NoteOnEvent:
 	def __init__(self, track, note, beat):
