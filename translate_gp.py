@@ -26,7 +26,7 @@ ch = ''
 TEMPO_PERCENT = 0.0004
 
 TAB_LINE_LENGTH = 40 
-TAB_HEIGHT = 50
+TAB_HEIGHT = 43
 
 def currentTime():
   return int(round(time.time() * TEMPO_PERCENT * 1000)) 
