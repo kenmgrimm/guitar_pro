@@ -9,14 +9,21 @@ from subprocess import Popen, PIPE
 
 import guitarpro
 
+# import led_midi
 
-START = 0
+
+START = 100
+song_file = 'Rush - Spirit Of The Radio.gp5'
+# song_file = 'the_rain_song.gp5'
+# song_file =	'since_ive_been_loving_you.gp3'
+# song_file = 'mediterranean_sundance.gp5'
+# song_file = 'entre_dos_aguas.gp3'
 # START = 170
 
 ch = ''
 
 # TEMPO_PERCENT = 100
-TEMPO_PERCENT = 0.0005
+TEMPO_PERCENT = 0.0004
 
 TAB_LINE_LENGTH = 40 
 
@@ -104,13 +111,13 @@ class Tab:
 
 	def startSegmentNumber(self):
 		segmentNumber = self.playIndex / TAB_LINE_LENGTH
-		return int(segmentNumber / 4) * 4
+		return int(segmentNumber / 5) * 5
 
 
 	def printLines(self, startMs, lastMs):
 		currentLineNumber = 2
 		segmentNumber = self.startSegmentNumber()
-		endSegmentNumber = segmentNumber + 3
+		endSegmentNumber = segmentNumber + 4
 
 		# print "Lines: " + str(segmentNumber) + " - " + str(endSegmentNumber)
 
@@ -233,11 +240,7 @@ def main():
 
 	myscreen.border(0)
 
-	# filepath = path.join('Rush - Spirit Of The Radio.gp5')
-	# filepath = path.join('the_rain_song.gp5')
-	filepath = path.join('since_ive_been_loving_you.gp3')
-	# filepath = path.join('mediterranean_sundance.gp5')
-	# filepath = path.join('entre_dos_aguas.gp3')
+	filepath = path.join(song_file)
 	song = guitarpro.parse(filepath)
 
 	tab = Tab()
