@@ -1,0 +1,13 @@
+
+
+def init():
+  global TAB_LINE_LENGTH
+  global TAB_HEIGHT
+  global START
+  global TEMPO_PERCENT
+
+  TAB_LINE_LENGTH = 40
+  TAB_HEIGHT = 43
+  START = 100
+  TEMPO_PERCENT = 0.0004
+
