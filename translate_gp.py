@@ -9,6 +9,8 @@ from subprocess import Popen, PIPE
 
 import guitarpro
 
+import sunshine_midi
+
 # import led_midi
 
 
@@ -25,11 +27,11 @@ ch = ''
 # TEMPO_PERCENT = 100
 TEMPO_PERCENT = 0.0004
 
-TAB_LINE_LENGTH = 40 
+TAB_LINE_LENGTH = 40
 TAB_HEIGHT = 43
 
 def currentTime():
-  return int(round(time.time() * TEMPO_PERCENT * 1000)) 
+  return int(round(time.time() * TEMPO_PERCENT * 1000))
 
 
 START_TIME = currentTime()
@@ -50,7 +52,7 @@ class NoteOnEvent:
 		self.track = track
 		self.note = note
 		self.beat = beat
-		self.realStartTime = beat.start + START_TIME 
+		self.realStartTime = beat.start + START_TIME
 		# print self.name + ": " + str(beat.start) + ": " + str(START_TIME) + ": " + str(self.realStartTime)
 
 	def timeToPlay(self):
@@ -74,7 +76,7 @@ class NoteOffEvent:
 class Tick:
 
 	def __init__(self, startMs):
-		self.setup(startMs, [-1, -1, -1, -1, -1, -1])	
+		self.setup(startMs, [-1, -1, -1, -1, -1, -1])
 
 	def setup(self, startMs, strings):
 		self.startMs = startMs
@@ -127,7 +129,7 @@ class Tab:
 		# print "Lines: " + str(segmentNumber) + " - " + str(endSegmentNumber)
 
 		while segmentNumber * TAB_LINE_LENGTH + segmentNumber < len(self.ticks):
-			if segmentNumber > endSegmentNumber: 
+			if segmentNumber > endSegmentNumber:
 				break
 
 			startPos = segmentNumber * TAB_LINE_LENGTH
@@ -164,7 +166,7 @@ class Tab:
 			# 	print ' '.join(segment)
 		myscreen.addstr(currentLineNumber, 1, "  " + str(startMs * TEMPO_PERCENT - lastMs * TEMPO_PERCENT) + ", " + ch)
 		currentLineNumber += 1
-		
+
 		myscreen.refresh()
 
 	def play(self):
@@ -268,7 +270,7 @@ def main():
 
 						event = NoteOnEvent(track, note, beat)
 						events.append(event)
-					
+
 						tab.appendTabTick(beat.start, note.string, note.value, note.realValue, beat.duration.time)
 
 						event = NoteOffEvent(track, note, beat)
