@@ -8,7 +8,7 @@ import subprocess
 
 import guitarpro
 
-import sunshine_midi
+import led_driver
 
 
 START = 100
