@@ -1,28 +1,10 @@
 #!/usr/bin/env python
 
-import os
 import time
-import sys
 
-if os.uname()[4][:3] == 'arm':
-  sys.stderr.write("Running Raspberry Pi\n  os: " + ' '.join(os.uname()) + "\n\n")
+from mock_pi import MockPi
 
-  from neopixel import *
-else:
-  sys.stderr.write("Not on Raspberry Pi\n  os: " + ' '.join(os.uname()) + "\n\n")
-
-  class Strip:
-    def show():
-      print "showing"
-
-    def setPixelColor(i, color):
-      print "setPixelColor"
-
-  class Color:
-    def __init__(self, r, g, b):
-      print "__init__"
-
-
+MockPi.checkPiAndMock()
 
 # LED strip configuration:
 LED_COUNT      = 100      # Number of LED pixels.
