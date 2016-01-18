@@ -1,32 +1,27 @@
 #!/usr/bin/env python
 
 from os import path
-
-import subprocess
-
 import sys
 import time
 import curses
-from subprocess import Popen, PIPE
+import subprocess
 
 import guitarpro
 
 import sunshine_midi
 
-# import led_midi
-
 
 START = 100
-song_file = 'Rush - Spirit Of The Radio.gp5'
-# song_file = 'the_rain_song.gp5'
-# song_file =	'since_ive_been_loving_you.gp3'
-# song_file = 'mediterranean_sundance.gp5'
-# song_file = 'entre_dos_aguas.gp3'
-# START = 170
+
+song_file = 'gp_files/Rush - Spirit Of The Radio.gp5'
+# song_file = 'gp_files/the_rain_song.gp5'
+# song_file =	'gp_files/since_ive_been_loving_you.gp3'
+# song_file = 'gp_files/mediterranean_sundance.gp5'
+# song_file = 'gp_files/entre_dos_aguas.gp3'
+
 
 ch = ''
 
-# TEMPO_PERCENT = 100
 TEMPO_PERCENT = 0.0004
 
 TAB_LINE_LENGTH = 40
@@ -285,7 +280,6 @@ def main():
 
 				# print event.name + " (" + str(event.realStartTime) + ") : " + str(event.note.string) + ", " + str(event.note.value) + "  (" + str(event.note.realValue) + ")"
 
-	# tab.printLines()
 
 	tab.play()
 
